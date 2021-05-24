@@ -1,0 +1,26 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 0;
+
+  height: 90vh;
+
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.container > .selected {
+  background-color: black;
+}
+
+.container > * {
+  background-color: deepskyblue;
+  border-style: solid;
+  height: 100%;
+  width: 100%;
+  font-size: 3rem;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
