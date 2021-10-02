@@ -1,4 +1,25 @@
-const interval = 500;
+let tiles = document.querySelectorAll('#tilemaster');
+
+
+colorTestSquares = (ele1, ele2) => {
+    let count = 0;
+    tiles.forEach(t => {
+        t.innerHTML = grid[count];
+    
+        if(count == ele1 || count == ele2){
+            t.style.color = 'magenta';
+        }
+        else{
+            t.style.color = 'pink';
+        }
+        count++;
+    });
+}
+
+
+
+
+const interval = 200;
 
 const orientation = ['Normal','Left','Top','Right'];
 
@@ -222,12 +243,13 @@ moveLeft = () => {
     for(let i = 0; i < objects.length; i++){
         console.log(i + "**********");
         let element = objects[i];
-        console.log(grid);
-       // console.log(grid);
 
         //Check bounds and that element is not frozen
         if(element.point1 % 10 != 0 && element.point2 % 10 != 0 && element.point3 % 10 != 0 && element.point4 % 10 != 0 && element.active == true) {
             console.log(`check for ${element.point1}     ${element.point2}      ${element.point3}     ${element.point4}`);
+            element.lowest1--;
+            element.lowest2--;
+            
             if(element.point1 != null)
                 removeColor(element.point1);
             if(element.point2 != null)
@@ -237,8 +259,10 @@ moveLeft = () => {
             if(element.point4 != null)    
                 removeColor(element.point4);
 
-            if(element.point1 != null)    
+            if(element.point1 != null)   
+                console.log('element.point1 before:' + element.point1); 
                 element.point1 -= 1;
+                console.log('element.point1 after:' + element.point1); 
             if(element.point2 != null)    
                 element.point2 -= 1;
             if(element.point3 != null)
@@ -255,7 +279,6 @@ moveLeft = () => {
             if(element.point4 != null) 
                 addColor(null,null,element.point4);
         }
-
 }}    
 
 
@@ -265,9 +288,11 @@ moveRight = () => {
         console.log(i + "**********");
         let element = objects[i];
         console.log(grid);
-       // console.log(grid);
         if(element.point1 % 10 != 9 && element.point2 % 10 != 9 && element.point3 % 10 != 9 && element.point4 % 10 != 9 && element.active == true) {
             console.log(`check for ${element.point1}     ${element.point2}      ${element.point3}     ${element.point4}`);
+            element.lowest1++;
+            element.lowest2++;
+
             if(element.point1 != null)
                 removeColor(element.point1);
             if(element.point2 != null)
@@ -299,87 +324,73 @@ moveRight = () => {
 
 printGrid = () => {
     let str = "";
+    let nextrow = 1;
     console.log("---------------");
     for(let i = 0; i < grid.length; i++){
         str += grid[i] + ", ";
-        if(i % 9 == 0 && i != 0){
+        if(nextrow == 10){
             console.log(str);
             console.log("\n");
             str = "";
+            nextrow = 0;
         }
+        nextrow++;
     }
     console.log("---------------");
 }
 
 checkBottomRow = () => {
     let clear_row = false;
-    for(let z = 90; z < 100; z++){
-        if(grid[z] == 0){
-            console.log('botton not all 1s');
-            return;
-        }
-    }
-    //console.log('bottom all 1s');
+
+
     clear_row = true;
     console.log('clearing row');
+    console.log(grid[80]);
+    // for(let z = 90; z < 100; z++)
+    //     removeColor(z);
 
-    for(let z = 90; z < 100; z++)
-        removeColor(z);
+    for(let z = 90; z <= 100; z++){
+        for(let y = z; y >= 10; y-=10){
+            grid[y] = grid[y-10];
+            console.log('grid[y]' + grid[y] + 'becomes' + grid[y-10]);
+            colorTestSquares();
+        }
+    }    
+    colorTestSquares();
+    printGrid();
 
-    for(let i = 0; i < objects.length; i++){
-        //console.log(objects.length);
-        let element = objects[i];
-        //console.log("inner" + grid);
-        if(element.point1 >= 90){
-            element.point1 = null;
-            grid[element.point1] = 0;
-        }
-        if(element.point2 >= 90){
-            element.point2 = null;
-            grid[element.point2] = 0;
-        }
-        if(element.point3 >= 90){
-            element.point3 = null;
-            grid[element.point3] = 0;
-        }
-        if(element.point4 >= 90){
-            element.point4 = null;
-            grid[element.point4] = 0;
-        }
-       
-    }
-    //console.log("outer" + grid);
 }
 
 checkGameOver = () => {
 
-    alert('Game over!');
+    alert('game over!');
 }
 
 moveShapes = () => {
     //Iterate over each object present on the tetris board
      for(let i = 0; i < objects.length; i++){
-        console.log(i + "**********");
+ 
         let element = objects[i];
-        //console.log(grid);
-       // console.log(grid);
+
 
        let a = [element.point1, element.point2, element.point3, element.point4];
        let b = [];
 
-  
-       
+
+
         //If every point is not on the bottom row, the element is not frozen and the element is still active 
         if(element.point1 < 90 && element.point2 < 90 && element.point3 < 90 && element.point4 < 90 && element.active == true) {
             printGrid();
             //If element in starting position cannot move
-            if(grid[element.lowest1 + 10] == 1 || grid[element.lowest2 + 10] == 1 && grid[4] == 1 && grid[5] == 1){
-                checkGameOver();
-                break;
-            }
+            // if(grid[element.lowest1 + 10] == 1 || grid[element.lowest2 + 10] == 1 && grid[4] == 1 && grid[5] == 1){
+            //     checkGameOver();
+            //     break;
+            // }
 
             //If the element reaches the bottom row or hits another block freeze that element
-            if(grid[element.lowest1 + 10] == 1 || grid[element.lowest2 + 10] == 1){
+            if(grid[element.point3 + 10] == 1 || grid[element.point4 + 10] == 1){
+                console.log((element.lowest1) + '()()()()' + element.lowest2)
+                console.log(grid[element.lowest1 + 10] + '()()()()' + grid[element.lowest2 + 10])
                 element.active = false;
                 console.log("ELEMENT DEACTIVATED!");
                 continue;
@@ -428,8 +439,18 @@ moveShapes = () => {
         }
 
 
+        //Color test squares 
+        colorTestSquares(element.lowest1, element.lowest2);
+       
+
         //If all elements are on the bottom row, shift everything down 1
-        checkBottomRow();
+        for(let z = 90; z < 100; z++){
+            if(grid[z] == 0){
+                break;
+            }
+            checkBottomRow();
+        }
+ 
     }}
   
 const container = document.querySelectorAll(".container");
@@ -447,7 +468,7 @@ makeShape = () => {
     }
 }
 
-objects.push(new square(4)); 
+objects.push(new Line(4)); 
 
 
 // setInterval(() => {
@@ -482,7 +503,7 @@ setInterval(() => {
     count++;
   
     if(count % 5 == 0 && objects[objects.length - 1].active == false){
-        objects.push(new square(14));
+        //objects.push(new Line(14));
     
     }
 }, interval);
