@@ -342,8 +342,8 @@ printGrid = () => {
 checkBottomRow = () => {
     let checkbottom = true;
 
-    // while(checkbottom){
-    for(let k = 0; k < 1; k++){
+    while(checkbottom){
+
         for(let z = 90; z < 100; z++){
             if(grid[z] == 0){
                 checkbottom = false;
@@ -355,8 +355,9 @@ checkBottomRow = () => {
         if(checkbottom){
             console.log('clearing row');
         
-            for(let z = 90; z <= 100; z++){
+            for(let z = 91; z <= 100; z++){
                 for(let y = z; y >= 10; y-=10){
+                    if(y != element.point1 && y != element.point2 && y != element.point3 && y != element.point4)
                     grid[y] = grid[y-10];
                     console.log('grid[y]' + grid[y] + 'becomes' + grid[y-10]);
                     colorTestSquares();
@@ -367,11 +368,12 @@ checkBottomRow = () => {
         }
 
     
-    }
+    
     printGrid();
+    colorTestSquares();
     console.log(1/0);
+    }
 }
-
 checkGameOver = () => {
 
     alert('game over!');
@@ -470,7 +472,7 @@ moveShapes = (obj) => {
        
  
         //If all elements are on the bottom row, shift everything down 1
-        checkBottomRow();
+        checkBottomRow(element);
         }
     }
 
