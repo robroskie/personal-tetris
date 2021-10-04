@@ -1,5 +1,5 @@
 let tiles = document.querySelectorAll('#tilemaster');
-
+let spawnNextEle = true;
 
 colorTestSquares = (ele1, ele2) => {
     let count = 0;
@@ -341,6 +341,8 @@ printGrid = () => {
 
 checkBottomRow = () => {
     let checkbottom = true;
+    console.log(`points of active element ${element.point1}     ${element.point2}      ${element.point3}     ${element.point4}`);
+    spawnNextEle = false;
 
     while(checkbottom){
 
@@ -357,7 +359,7 @@ checkBottomRow = () => {
         
             for(let z = 91; z <= 100; z++){
                 for(let y = z; y >= 10; y-=10){
-                    if(y != element.point1 && y != element.point2 && y != element.point3 && y != element.point4)
+                    // if(y != element.point1 && y != element.point2 && y != element.point3 && y != element.point4)
                     grid[y] = grid[y-10];
                     console.log('grid[y]' + grid[y] + 'becomes' + grid[y-10]);
                     colorTestSquares();
@@ -371,8 +373,9 @@ checkBottomRow = () => {
     
     printGrid();
     colorTestSquares();
-    console.log(1/0);
+    // console.log(1/0);
     }
+    spawnNextEle = true;
 }
 checkGameOver = () => {
 
@@ -383,6 +386,8 @@ moveShapes = (obj) => {
     //Iterate over each object present on the tetris board
 
     element = currObj
+    //If all elements are on the bottom row, shift everything down 1
+    checkBottomRow(element);
 
         //If every point is not on the bottom row, the element is not frozen and the element is still active 
         if(element.point1 < 90 && element.point2 < 90 && element.point3 < 90 && element.point4 < 90 && element.active == true) {
@@ -457,6 +462,9 @@ moveShapes = (obj) => {
             if(element.point4 != null) 
                 addColor(null,null,element.point4);
 
+ 
+        
+
             //If element is on the bottom row after moving deactivate it
             if((element.lowest1 > 89 || element.lowest2 > 89) && element instanceof square){
                 element.active = false;
@@ -470,9 +478,7 @@ moveShapes = (obj) => {
         //Color test squares 
         colorTestSquares(element.lowest1, element.lowest2);
        
- 
-        //If all elements are on the bottom row, shift everything down 1
-        checkBottomRow(element);
+
         }
     }
 
@@ -482,7 +488,10 @@ const container = document.querySelectorAll(".container");
 let count = 0;
 
 makeShape = () => {
-    currObj = new Line(4);
+    if(spawnNextEle){
+        currObj = new square(4);
+    }
+
     // const c = Math.floor(Math.random() * 5);
     // switch(c) {
     //     case 0 : objects.push(new square(14));
@@ -493,7 +502,7 @@ makeShape = () => {
     // }
 }
 
-currObj = new Line(4);
+currObj = new square(4);
 
 // objects.push(new Line(4)); 
 
@@ -526,9 +535,10 @@ setInterval(() => {
         }
     }
 
-    moveShapes();
-    count++;
-  
+    if(spawnNextEle){
+        moveShapes();
+        count++;
+    }
     // if(count % 5 == 0 && objects[objects.length - 1].active == false){
     //     //objects.push(new Line(14));
     
