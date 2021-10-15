@@ -175,7 +175,7 @@ function Open(point1) {
 
 
 let currObjects;
-
+let objects = [];
 
 
 modify = (element, value) => {
@@ -382,6 +382,8 @@ checkGameOver = () => {
     alert('game over!');
 }
 
+
+
 moveShapes = (obj) => {
     //Iterate over each object present on the tetris board
 
@@ -398,18 +400,24 @@ moveShapes = (obj) => {
             //     break;
             // }
 
+
+
             if(element instanceof Line){
                 console.log('line');
                 //horizontal line
                 if(element.point3 == element.point2 + 1){
                     console.log('horizontal line');
+                    if(grid[element1+10] == 1 || grid[element2+10] == 1 || grid[element3+10] == 1 || grid[element4+10] == 1){
+                        console.log('horizontal line frozen');
+                        element.active = false;
+                        makeShape();
+                    }
+
                 }
 
-                //vertical line
-                //lowest point is 
                 else{
-                    if(grid[element.point4 + 10] == 1 || (element.point4 + 10) > 89){
-                        console.log('vertical line');
+                    console.log('vertical line');
+                    if(grid[element.point4 + 10] == 1){
                         element.active = false;
                         console.log("ELEMENT DEACTIVATED vertical line!");
                         makeShape();
@@ -419,50 +427,54 @@ moveShapes = (obj) => {
 
 
             //If the element reaches the bottom row or hits another block freeze that element
-            else if(element instanceof square && (grid[element.point3 + 10] == 1 || grid[element.point4 + 10] == 1)){
-                console.log((element.lowest1) + '()()()()' + element.lowest2)
-                console.log(grid[element.lowest1 + 10] + '()()()()' + grid[element.lowest2 + 10])
-                element.active = false;
-                console.log("ELEMENT DEACTIVATED!");
-                makeShape();
-                // continue;
+            else if(element instanceof square){
+                console.log('square');
+                if((grid[element.point1+10] == 1 && Object.values(element).indexOf(element.point1+10) < 0 ) || (grid[element.point2+10] == 1 && Object.values(element).indexOf(element.point2+10) < 0 ) || (grid[element.point3+10] == 1 && Object.values(element).indexOf(element.point3+10) < 0 ) || (grid[element.point4+10] == 4 && Object.values(element).indexOf(element.point4+10) < 0 )){
+                    console.log('square frozen');
+                    element.active = false;
+    
+                    makeShape();
+                }
+
             }
 
 
             
             console.log(`check for ${element.point1}     ${element.point2}      ${element.point3}     ${element.point4}`);
             
-            if(element.point1 != null)
-                removeColor(element.point1);
-            if(element.point2 != null)
-                removeColor(element.point2);
-            if(element.point3 != null)
-                removeColor(element.point3);
-            if(element.point4 != null)    
-                removeColor(element.point4);
+            if(element.active){
+                if(element.point1 != null)
+                    removeColor(element.point1);
+                if(element.point2 != null)
+                    removeColor(element.point2);
+                if(element.point3 != null)
+                    removeColor(element.point3);
+                if(element.point4 != null)    
+                    removeColor(element.point4);
 
-            if(element.point1 != null)    
-                element.point1 += 10;
-            if(element.point2 != null)    
-                element.point2 += 10;
-            if(element.point3 != null)
-                element.point3 += 10;
-            if(element.point4 != null) 
-                element.point4 += 10;
+                if(element.point1 != null)    
+                    element.point1 += 10;
+                if(element.point2 != null)    
+                    element.point2 += 10;
+                if(element.point3 != null)
+                    element.point3 += 10;
+                if(element.point4 != null) 
+                    element.point4 += 10;
 
-            element.lowest1 += 10;
-            element.lowest2 += 10;
+                element.lowest1 += 10;
+                element.lowest2 += 10;
 
-            if(element.point1 != null)
-                addColor(null,null,element.point1);
-            if(element.point2 != null)
-                addColor(null,null,element.point2);
-            if(element.point3 != null)
-                addColor(null,null,element.point3);
-            if(element.point4 != null) 
-                addColor(null,null,element.point4);
+                if(element.point1 != null)
+                    addColor(null,null,element.point1);
+                if(element.point2 != null)
+                    addColor(null,null,element.point2);
+                if(element.point3 != null)
+                    addColor(null,null,element.point3);
+                if(element.point4 != null) 
+                    addColor(null,null,element.point4);
+            }
 
- 
+
         
 
             //If element is on the bottom row after moving deactivate it
@@ -479,6 +491,11 @@ moveShapes = (obj) => {
         colorTestSquares(element.lowest1, element.lowest2);
        
 
+        }
+        else{
+            element.active = false;
+            console.log("ELEMENT DEACTIVATED 2!");
+            makeShape();
         }
     }
 
@@ -502,19 +519,19 @@ makeShape = () => {
     // }
 }
 
-currObj = new square(4);
+currObj = new Line(4);
 
 // objects.push(new Line(4)); 
 
 
-// setInterval(() => {
-//     count++;
-//     if(count % 5 == 0){
-//         objects.push(new Line(4));
+setInterval(() => {
+    count++;
+    if(count % 5 == 0){
+        objects.push(new square(4));
     
-//     }
+    }
 
-// }, interval);
+}, interval);
 
 setInterval(() => {
     document.onkeydown = checkKey;
