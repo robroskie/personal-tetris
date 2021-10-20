@@ -217,23 +217,26 @@ drawL = (element) => {
     console.log(`element.point1: ${element.point1}   element.point2: ${element.point2}   element.point3: ${element.point3}    element.point4: ${element.point4}`);
 }
 
-rotate = () => {
-    for(let i = 0; i < objects.length; i++){
-        let element = objects[i];
-        element.orientation++;
-        if(element.orientation >= 4)
-            element.orientation = 0;
+rotate = (currObj) => {
 
-        if(element instanceof T && element.active == true) {
-            drawT(element); 
-            console.log("if draw T");
-        }
-        else if(element instanceof L && element.active == true) {
-            drawL(element); 
-            console.log("if draw L");
-        }
+    
+    currObj.orientation = currObj.orientation + 1;
+    if(currObj.orientation >= 4)
+        currObj.orientation = 0;
 
+    if(currObj instanceof T) {
+        drawT(element); 
+        console.log("rotate T");
     }
+    else if(currObj instanceof L) {
+        drawL(element); 
+        console.log("rotate L");
+    }
+    else if(currObj instanceof Line){
+        console.log('rotate line');
+    }
+
+    
 }
 
 
@@ -410,6 +413,7 @@ moveShapes = (obj) => {
                     if(grid[element1+10] == 1 || grid[element2+10] == 1 || grid[element3+10] == 1 || grid[element4+10] == 1){
                         console.log('horizontal line frozen');
                         element.active = false;
+                        objects.pop();
                         makeShape();
                     }
 
@@ -425,11 +429,11 @@ moveShapes = (obj) => {
                 }
             }
 
-
+         
             //If the element reaches the bottom row or hits another block freeze that element
             else if(element instanceof square){
                 console.log('square');
-                if((grid[element.point1+10] == 1 && Object.values(element).indexOf(element.point1+10) < 0 ) || (grid[element.point2+10] == 1 && Object.values(element).indexOf(element.point2+10) < 0 ) || (grid[element.point3+10] == 1 && Object.values(element).indexOf(element.point3+10) < 0 ) || (grid[element.point4+10] == 4 && Object.values(element).indexOf(element.point4+10) < 0 )){
+                if(grid[element.point3+10] == 1 || grid[element.point4+10] == 4){
                     console.log('square frozen');
                     element.active = false;
     
@@ -506,7 +510,7 @@ let count = 0;
 
 makeShape = () => {
     if(spawnNextEle){
-        currObj = new square(4);
+        currObj = new Line(4);
     }
 
     // const c = Math.floor(Math.random() * 5);
@@ -545,10 +549,10 @@ setInterval(() => {
             console.log('lol');
         }
         else if (e.keyCode == '37') {
-            moveLeft();
+            moveLeft(objects[0]);
         }
         else if (e.keyCode == '39') {
-            moveRight();
+            moveRight(objects[0]);
         }
     }
 
