@@ -25,45 +25,128 @@ for (let i = 0; i < 100; i++) {
   grid[i] = 0;
 }
 
-removeColor = (idx) => {
-  if (idx != null) {
-    grid[idx] = 0;
-    let row = Math.floor(idx / 10);
-    let col = (idx % 10) + 1;
-    const temp_add = ".grid-item" + (row + 1) + "-" + col;
-    document.querySelector(temp_add).classList.remove("selected");
+// addColor = (...values) => {
+//   if (values[2] != null) {
+//     let row = values[0];
+//     let col = values[1];
+//     let idx = values[2];
+
+//     //Add to current element
+//     if (row == null) {
+//       let row = Math.floor(idx / 10);
+//       let col = (idx % 10) + 1;
+//       const temp_add = ".grid-item" + (row + 1) + "-" + col;
+//       grid[idx] = 1;
+//       document.querySelector(temp_add).classList.add("selected");
+//     }
+
+//     //Add to element one row below
+//     else {
+//       const temp_add = ".grid-item" + row + "-" + col;
+//       grid[idx + 10] = 1;
+//       document.querySelector(temp_add).classList.add("selected");
+//     }
+//   }
+
+removeColor = (point) => {
+  console.log(`removing point ${point}`);
+  grid[point] = 0;
+
+  let row = Math.floor(point / 10);
+  let col = (point % 10) + 1;
+  const temp_add = ".grid-item" + (row + 1) + "-" + col;
+  document.querySelector(temp_add).classList.remove("selected");
+};
+
+addColor = (point) => {
+  grid[point] = 1;
+
+  const row = Math.floor(point / 10);
+  const col = (point % 10) + 1;
+
+  const temp_add = ".grid-item" + (row + 1) + "-" + col;
+
+  document.querySelector(temp_add).classList.add("selected");
+};
+
+updateColors = (Obj) => {
+  //  console.log('call');
+  //  console.log(`arr${Obj.points} ${Obj.location}`)
+  const arr = Obj.points;
+
+  // Obj.points.forEach(function (part, index, arr){
+  for (let z = 0; z < arr.length; z++) {
+    for (let i = 0; i < arr[z].length; i++) {
+      // console.log('element' + arr[z][i]);
+      if (arr[z][i] == 1) {
+        switch (z) {
+          case 0:
+            addColor(Obj.location + i);
+            break;
+          case 1:
+            addColor(Obj.location + 10 + i);
+            break;
+          case 2:
+            addColor(Obj.location + 20 + i);
+            break;
+          default:
+            break;
+          // code block
+        }
+      }
+    }
   }
 };
 
-addColor = (...values) => {
-  if (values[2] != null) {
-    let row = values[0];
-    let col = values[1];
-    let idx = values[2];
-
-    //Add to current element
-    if (row == null) {
-      let row = Math.floor(idx / 10);
-      let col = (idx % 10) + 1;
-      const temp_add = ".grid-item" + (row + 1) + "-" + col;
-      grid[idx] = 1;
-      document.querySelector(temp_add).classList.add("selected");
-    }
-
-    //Add to element one row below
-    else {
-      const temp_add = ".grid-item" + row + "-" + col;
-      grid[idx + 10] = 1;
-      document.querySelector(temp_add).classList.add("selected");
-    }
-  }
+removeAllColors = (Obj) => {
+  removeColor(Obj.location);
+  removeColor(Obj.location + 1);
+  removeColor(Obj.location + 2);
+  removeColor(Obj.location + 10);
+  removeColor(Obj.location + 11);
+  removeColor(Obj.location + 12);
+  removeColor(Obj.location + 20);
+  removeColor(Obj.location + 21);
+  removeColor(Obj.location + 22);
 };
 
 addShapeColors = (Obj) => {
+  //  console.log('call');
+  //  console.log(`arr${Obj.points} ${Obj.location}`)
+  const arr = Obj.points;
+  // Obj.points.forEach(function (part, index, arr){
+  for (let z = 0; z < arr.length; z++) {
+    for (let i = 0; i < arr[z].length; i++) {
+      // console.log('element' + arr[z][i]);
+      if (arr[z][i] == 1) {
+        switch (z) {
+          case 0:
+            addColor(Obj.location + i);
+            break;
+          case 1:
+            addColor(Obj.location + 10 + i);
+            break;
+          case 2:
+            addColor(Obj.location + 20 + i);
+          default:
+            break;
+          // code block
+        }
+      }
+    }
+  }
+
+  // addColor(null, null, arr[index]);
+
   //   console.log("adding colors");
-  Obj.allPoints.forEach(function (part, index, arr) {
-    addColor(null, null, arr[index]);
-  });
+  // Obj.allPoints.forEach(function (part, index, arr) {
+  // addColor(null, null, arr[index]);
+  // });
+
+  // Obj.points.forEach(function (part, index, arr){
+  //   addColor(null, null, arr[index]);
+
+  // })
 };
 
 checkShapeFreeze = (Obj) => {
@@ -78,33 +161,47 @@ checkShapeFreeze = (Obj) => {
     // console.log("checking square downwards movement");
     Obj.bottomPoints.forEach(function (part, index, arr) {
       if (grid[arr[index] + 10] == 1 || arr[index] + 10 > 99) {
-        console.log("shape freeze");
+        // console.log("shape freeze");
         Obj.active = false;
         checkCompleteRows(Obj);
       }
     });
   } else if (Obj instanceof T) {
     // console.log("checking square downwards movement");
-    Obj.bottomPoints.forEach(function (part, index, arr) {
-      if (grid[arr[index] + 10] == 1 || arr[index] + 10 > 99) {
-        console.log("shape freeze");
+    // Obj.bottomPoints.forEach(function (part, index, arr) {
+    //   if (grid[arr[index] + 10] == 1 || arr[index] + 10 > 99) {
+    //     console.log("shape freeze");
+    //     Obj.active = false;
+    //     checkCompleteRows(Obj);
+    //   }
+    // });
+    const collisionPoints = Obj.getCollisionPoints();
+    collisionPoints.forEach(function (part, index, arr) {
+      // console.log(`checking ${Obj.location }`)
+      const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
+      // console.log(`point to check is: ${pointToCheck}`);
+      if (grid[pointToCheck + 10] == 1 || pointToCheck >= 90) {
+        // console.log('collision');
         Obj.active = false;
-        checkCompleteRows(Obj);
+        // checkCompleteRows(Obj);
       }
     });
   }
 };
-
 moveShapeDown = (Obj) => {
-  Obj.allPoints.forEach(function (part, index, arr) {
-    removeColor(arr[index]);
-    arr[index] += 10;
-  });
-  Obj.bottomPoints.forEach(function (part, index, arr) {
-    removeColor(arr[index]);
-    arr[index] += 10;
-  });
-  Obj.addColors();
+  // Obj.allPoints.forEach(function (part, index, arr) {
+  //   removeColor(arr[index]);
+  //   arr[index] += 10;
+  // });
+  // Obj.bottomPoints.forEach(function (part, index, arr) {
+  //   removeColor(arr[index]);
+  //   arr[index] += 10;
+  // });
+  removeAllColors(Obj);
+
+  Obj.location += 10;
+
+  updateColors(Obj);
 };
 
 moveShapeLeft = (Obj) => {
@@ -116,6 +213,9 @@ moveShapeLeft = (Obj) => {
     removeColor(arr[index]);
     arr[index] -= 1;
   });
+
+  Obj.location -= 1;
+
   Obj.addColors();
 };
 
@@ -128,6 +228,9 @@ moveShapeRight = (Obj) => {
     removeColor(arr[index]);
     arr[index] += 1;
   });
+
+  Obj.location += 1;
+
   Obj.addColors();
 };
 
@@ -260,6 +363,55 @@ function square() {
 }
 
 function T() {
+  this.location = 4;
+
+  this.points = [
+    [1, 1, 1],
+    [0, 1, 0],
+    [0, 1, 0],
+  ];
+
+  this.orientation = 0;
+
+  this.getCollisionPoints = function () {
+    switch (this.orientation) {
+      case 0:
+        console.log("case 0");
+        return [
+          [0, 0],
+          [2, 1],
+          [0, 2],
+        ];
+        break;
+      case 1:
+        console.log("case 1");
+        return [
+          [1, 0],
+          [1, 1],
+          [2, 2],
+        ];
+        break;
+
+      case 2:
+        console.log("case 2");
+        return [
+          [2, 0],
+          [2, 1],
+          [2, 2],
+        ];
+        break;
+
+      case 3:
+        console.log("case 0");
+        return [
+          [0, 2],
+          [1, 1],
+          [1, 2],
+        ];
+        break;
+    }
+  };
+
   this.point1 = 4;
   this.point2 = 5;
   this.point3 = 6;
@@ -285,11 +437,22 @@ function T() {
   };
 
   this.initLowest = function () {
-    this.bottomPoints = [this.allPoints[0], this.allPoints[2], this.allPoints[4]];
+    this.bottomPoints = [
+      this.allPoints[0],
+      this.allPoints[2],
+      this.allPoints[4],
+    ];
+  };
+
+  this.rotate = function () {
+    this.points[0].map((val, index) =>
+      this.points.map((row) => row[index]).reverse()
+    );
+    addShapeColors(this);
+    console.log(`this.points=${this.points}`);
   };
 
   this.active = true;
-  this.orientation = 0;
 }
 
 function L(point1) {
@@ -361,147 +524,88 @@ function Open(point1) {
 let currObjects;
 let objects = [];
 
-modify = (element, value) => {
-  removeColor(element);
-  element += value;
-  addColor(null, null, element);
-};
-
-drawT = (element) => {
-  switch (element.orientation) {
-    case 0:
-      removeColor(element.point4);
-      element.point4 += 2;
-      addColor(null, null, element.point4);
-      removeColor(element.point2);
-      element.point2 += 9;
-      addColor(null, null, element.point2);
-      break;
-
-    case 1:
-      removeColor(element.point2);
-      element.point2 -= 9;
-      addColor(null, null, element.point2);
-      break;
-
-    case 2:
-      removeColor(element.point1);
-      element.point1 -= 11;
-      addColor(null, null, element.point1);
-      break;
-
-    case 3:
-      removeColor(element.point1);
-      element.point1 += 11;
-      addColor(null, null, element.point1);
-      removeColor(element.point4);
-      element.point4 -= 2;
-      addColor(null, null, element.point4);
-      break;
-  }
-};
-
-drawL = (element) => {
-  // console.log(`element.point1: ${element.point1}   element.point2: ${element.point2}   element.point3: ${element.point3}    element.point4: ${element.point4}`);
-  switch (element.orientation) {
-    case 1:
-      removeColor(element.point2);
-      element.point2 -= 9;
-      addColor(null, null, element.point2);
-      removeColor(element.point3);
-      element.point3 -= 17;
-      addColor(null, null, element.point3);
-      removeColor(element.point4);
-      element.point4 -= 8;
-      addColor(null, null, element.point4);
-      break;
-
-    case 2:
-      break;
-  }
-  // console.log(`element.point1: ${element.point1}   element.point2: ${element.point2}   element.point3: ${element.point3}    element.point4: ${element.point4}`);
-};
-
-drawLine = (element) => {
-  // console.log("rotating line")
-};
-
 rotate = (currObj) => {
-
-
-
+  console.log(`rotating `);
   currObj.orientation += 1;
   currObj.orientation %= 4;
+  currObj.rotate();
 
-  console.log(`currObj is ${currObj.orientation}`);
-  
   if (currObj instanceof T) {
-    console.log("rotate T");
-    if (currObj.orientation == 1) {
-      console.log('rotating');
-      removeColor(currObj.allPoints[3]);
-      removeColor(currObj.allPoints[4]);
-      currObj.allPoints[3] -= 19;
-      currObj.allPoints[4] -= 9;
+    console.log(currObj.points);
+    //   console.log("rotate T");
+    //   if (currObj.orientation == 1) {
+    //     console.log("rotating");
+    //     removeColor(currObj.allPoints[3]);
+    //     removeColor(currObj.allPoints[4]);
+    //     currObj.allPoints[3] -= 19;
+    //     currObj.allPoints[4] -= 9;
 
-      currObj.bottomPoints = [currObj.allPoints[0], currObj.allPoints[1], currObj.allPoints[4]];
+    //     currObj.bottomPoints = [
+    //       currObj.allPoints[0],
+    //       currObj.allPoints[1],
+    //       currObj.allPoints[4],
+    //     ];
 
-      console.log(currObj.allPoints);
-    }
+    //     console.log(currObj.allPoints);
+    //   } else if (currObj.orientation == 2) {
+    //     removeColor(currObj.allPoints[0]);
+    //     removeColor(currObj.allPoints[2]);
+    //     removeColor(currObj.allPoints[3]);
+    //     removeColor(currObj.allPoints[4]);
+    //     removeColor(currObj.allPoints[5]);
 
-    else if (currObj.orientation == 2) {
+    //     let temp = currObj.allPoints[2];
 
-      removeColor(currObj.allPoints[0]);
-      removeColor(currObj.allPoints[2]);
-      removeColor(currObj.allPoints[3]);
-      removeColor(currObj.allPoints[4]);
-      removeColor(currObj.allPoints[5]);
+    //     currObj.allPoints[2] = currObj.allPoints[0];
+    //     currObj.allPoints[0] = temp;
+    //     currObj.allPoints[3] -= 1;
+    //     currObj.allPoints[4] -= 31;
 
-      let temp = currObj.allPoints[2]
+    //     currObj.bottomPoints = [
+    //       currObj.allPoints[0],
+    //       currObj.allPoints[1],
+    //       currObj.allPoints[2],
+    //     ];
+    //   } else if (currObj.orientation == 3) {
+    //     removeColor(currObj.allPoints[0]);
+    //     removeColor(currObj.allPoints[2]);
 
-      currObj.allPoints[2] = currObj.allPoints[0];
-      currObj.allPoints[0] = temp;
-      currObj.allPoints[3] -= 1;
-      currObj.allPoints[4] -= 31;
+    //     currObj.allPoints[0] -= 10;
+    //     currObj.allPoints[2] -= 7;
 
-      currObj.bottomPoints = [currObj.allPoints[0], currObj.allPoints[1], currObj.allPoints[2]];
-    }
+    //     currObj.bottomPoints = [currObj.allPoints[1]];
+    //   } else if (currObj.orientation == 0) {
+    //     removeColor(currObj.allPoints[0]);
+    //     removeColor(currObj.allPoints[1]);
+    //     removeColor(currObj.allPoints[2]);
+    //     removeColor(currObj.allPoints[3]);
+    //     removeColor(currObj.allPoints[4]);
+    //     removeColor(currObj.allPoints[5]);
 
-    else if (currObj.orientation == 3) {
+    //     let temp = currObj.allPoints[0];
+    //     let temp2 = currObj.allPoints[1];
 
-      removeColor(currObj.allPoints[0]);
-      removeColor(currObj.allPoints[2]);
+    //     // 4 => 1
+    //     currObj.allPoints[0] = currObj.allPoints[3];
 
-      currObj.allPoints[0] -= 10;
-      currObj.allPoints[2] -= 9;
+    //     // 3 => 2
+    //     currObj.allPoints[1] = currObj.allPoints[2];
 
-      currObj.bottomPoints = [currObj.allPoints[1]];
-    }
+    //     // 1 => 3
+    //     currObj.allPoints[2] = temp;
 
-    else if (currObj.orientation == 0) {
+    //     currObj.allPoints[3] = temp2 + 1;
 
-      removeColor(currObj.allPoints[0]);
-      removeColor(currObj.allPoints[1]);
-      removeColor(currObj.allPoints[2]);
-      removeColor(currObj.allPoints[3]);
-      removeColor(currObj.allPoints[4]);
-      removeColor(currObj.allPoints[5]);
+    //     currObj.allPoints[4] += 31;
 
-      let temp = currObj.allPoints[0]
-
-      currObj.allPoints[0] = currObj.allPoints[3];
-      // currObj.allPoints[3] = temp;
-      // currObj.allPoints[1] = currObj.allPoints[2];
-      // currObj.allPoints[0] = currObj.allPoints[3];
-      // currObj.allPoints[4] += 31;
-
-      currObj.bottomPoints = [currObj.allPoints[4]];
-    }
-
-
-    currObj.addColors();
-  
+    //     currObj.bottomPoints = [
+    //       currObj.allPoints[0],
+    //       currObj.allPoints[2],
+    //       currObj.allPoints[4],
+    //     ];
   }
+
+  currObj.addColors();
 };
 
 printGrid = () => {
@@ -572,6 +676,7 @@ setInterval(() => {
   document.onkeydown = checkKey;
 
   function checkKey(e) {
+    removeAllColors(currObj);
     e = e || window.event;
     if (e.keyCode == "38") {
       rotate(currObj);
