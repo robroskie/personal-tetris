@@ -15,7 +15,7 @@ colorTestSquares = (ele1, ele2) => {
   });
 };
 
-const orientation = ["Normal", "Left", "Top", "Right"];
+
 
 let element = 1;
 const shapes = ["line", "square", "L", "T", "open"];
@@ -149,6 +149,22 @@ addShapeColors = (Obj) => {
   // })
 };
 
+checkCollisionPoints = (Obj) => {
+  const collisionPoints = Obj.getCollisionPoints();
+  collisionPoints.forEach(function (part, index, arr) {
+    // console.log(`checking ${Obj.location }`)
+    const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
+    // console.log(`point to check is: ${pointToCheck}`);
+    if (grid[pointToCheck + 10] == 1) {
+      // console.log('collision');
+      Obj.active = false;
+      return false;
+      // checkCompleteRows(Obj);
+    }
+  });
+  return true;
+}
+
 checkShapeFreeze = (Obj) => {
   if (Obj instanceof testBlock) {
     Obj.allPoints.forEach(function (part, index, arr) {
@@ -179,7 +195,7 @@ checkShapeFreeze = (Obj) => {
     collisionPoints.forEach(function (part, index, arr) {
       // console.log(`checking ${Obj.location }`)
       const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
-      // console.log(`point to check is: ${pointToCheck}`);
+      console.log(`point to check is: ${pointToCheck}`);
       if (grid[pointToCheck + 10] == 1 || pointToCheck >= 90) {
         // console.log('collision');
         Obj.active = false;
@@ -189,49 +205,38 @@ checkShapeFreeze = (Obj) => {
   }
 };
 moveShapeDown = (Obj) => {
-  // Obj.allPoints.forEach(function (part, index, arr) {
-  //   removeColor(arr[index]);
-  //   arr[index] += 10;
-  // });
-  // Obj.bottomPoints.forEach(function (part, index, arr) {
-  //   removeColor(arr[index]);
-  //   arr[index] += 10;
-  // });
-  removeAllColors(Obj);
+  checkShapeFreeze(Obj);
+  if(Obj.active){
+    removeAllColors(Obj);
 
-  Obj.location += 10;
+    Obj.location += 10;
+  
+    updateColors(Obj);
+  }
 
-  updateColors(Obj);
 };
 
 moveShapeLeft = (Obj) => {
-  Obj.allPoints.forEach(function (part, index, arr) {
-    removeColor(arr[index]);
-    arr[index] -= 1;
-  });
-  Obj.bottomPoints.forEach(function (part, index, arr) {
-    removeColor(arr[index]);
-    arr[index] -= 1;
-  });
+    Obj.location -= 1;
+    removeAllColors(Obj);
 
-  Obj.location -= 1;
 
-  Obj.addColors();
+    updateColors(Obj);
+
+  
+
+
+
+  // Obj.addColors();
 };
 
 moveShapeRight = (Obj) => {
-  Obj.allPoints.forEach(function (part, index, arr) {
-    removeColor(arr[index]);
-    arr[index] += 1;
-  });
-  Obj.bottomPoints.forEach(function (part, index, arr) {
-    removeColor(arr[index]);
-    arr[index] += 1;
-  });
-
   Obj.location += 1;
+  removeAllColors(Obj);
 
-  Obj.addColors();
+
+  updateColors(Obj);
+
 };
 
 function testBlock() {
@@ -342,14 +347,14 @@ function testBlock2() {
 }
 
 function square() {
-  this.point1 = 5;
-  this.point2 = this.point1 + 1;
-  this.point3 = this.point1 + 10;
-  this.point4 = this.point1 + 11;
+  // this.point1 = 5;
+  // this.point2 = this.point1 + 1;
+  // this.point3 = this.point1 + 10;
+  // this.point4 = this.point1 + 11;
 
-  this.allPoints = [this.point1, this.point2, this.point3, this.point4];
+  // this.allPoints = [this.point1, this.point2, this.point3, this.point4];
 
-  this.bottomPoints = [this.point3, this.point4];
+  // this.bottomPoints = [this.point3, this.point4];
 
   this.addColors = function () {
     addShapeColors(this);
@@ -404,7 +409,7 @@ function T() {
       case 3:
         console.log("case 0");
         return [
-          [0, 2],
+          [2, 0],
           [1, 1],
           [1, 2],
         ];
@@ -412,21 +417,21 @@ function T() {
     }
   };
 
-  this.point1 = 4;
-  this.point2 = 5;
-  this.point3 = 6;
-  this.point4 = this.point2 + 10;
-  this.point5 = this.point2 + 20;
+  // this.point1 = 4;
+  // this.point2 = 5;
+  // this.point3 = 6;
+  // this.point4 = this.point2 + 10;
+  // this.point5 = this.point2 + 20;
 
-  this.allPoints = [
-    this.point1,
-    this.point2,
-    this.point3,
-    this.point4,
-    this.point5,
-  ];
+  // this.allPoints = [
+  //   this.point1,
+  //   this.point2,
+  //   this.point3,
+  //   this.point4,
+  //   this.point5,
+  // ];
 
-  this.bottomPoints = [this.point1, this.point3, this.point5];
+  // this.bottomPoints = [this.point1, this.point3, this.point5];
 
   this.addColors = function () {
     addShapeColors(this);
@@ -436,21 +441,21 @@ function T() {
     moveShapeDown(this);
   };
 
-  this.initLowest = function () {
-    this.bottomPoints = [
-      this.allPoints[0],
-      this.allPoints[2],
-      this.allPoints[4],
-    ];
-  };
+  // this.initLowest = function () {
+  //   this.bottomPoints = [
+  //     this.allPoints[0],
+  //     this.allPoints[2],
+  //     this.allPoints[4],
+  //   ];
+  // };
 
-  this.rotate = function () {
-    this.points[0].map((val, index) =>
-      this.points.map((row) => row[index]).reverse()
-    );
-    addShapeColors(this);
-    console.log(`this.points=${this.points}`);
-  };
+  // this.rotate = function () {
+  //   this.points[0].map((val, index) =>
+  //     this.points.map((row) => row[index]).reverse()
+  //   );
+  // addShapeColors(this);
+  // console.log(`this.points=${this.points}`);
+  // };
 
   this.active = true;
 }
@@ -528,84 +533,15 @@ rotate = (currObj) => {
   console.log(`rotating `);
   currObj.orientation += 1;
   currObj.orientation %= 4;
-  currObj.rotate();
 
-  if (currObj instanceof T) {
-    console.log(currObj.points);
-    //   console.log("rotate T");
-    //   if (currObj.orientation == 1) {
-    //     console.log("rotating");
-    //     removeColor(currObj.allPoints[3]);
-    //     removeColor(currObj.allPoints[4]);
-    //     currObj.allPoints[3] -= 19;
-    //     currObj.allPoints[4] -= 9;
+  // currObj.points[0].map((val, index) =>
+  //   currObj.points.map((row) => row[index]).reverse()
+  // );
 
-    //     currObj.bottomPoints = [
-    //       currObj.allPoints[0],
-    //       currObj.allPoints[1],
-    //       currObj.allPoints[4],
-    //     ];
-
-    //     console.log(currObj.allPoints);
-    //   } else if (currObj.orientation == 2) {
-    //     removeColor(currObj.allPoints[0]);
-    //     removeColor(currObj.allPoints[2]);
-    //     removeColor(currObj.allPoints[3]);
-    //     removeColor(currObj.allPoints[4]);
-    //     removeColor(currObj.allPoints[5]);
-
-    //     let temp = currObj.allPoints[2];
-
-    //     currObj.allPoints[2] = currObj.allPoints[0];
-    //     currObj.allPoints[0] = temp;
-    //     currObj.allPoints[3] -= 1;
-    //     currObj.allPoints[4] -= 31;
-
-    //     currObj.bottomPoints = [
-    //       currObj.allPoints[0],
-    //       currObj.allPoints[1],
-    //       currObj.allPoints[2],
-    //     ];
-    //   } else if (currObj.orientation == 3) {
-    //     removeColor(currObj.allPoints[0]);
-    //     removeColor(currObj.allPoints[2]);
-
-    //     currObj.allPoints[0] -= 10;
-    //     currObj.allPoints[2] -= 7;
-
-    //     currObj.bottomPoints = [currObj.allPoints[1]];
-    //   } else if (currObj.orientation == 0) {
-    //     removeColor(currObj.allPoints[0]);
-    //     removeColor(currObj.allPoints[1]);
-    //     removeColor(currObj.allPoints[2]);
-    //     removeColor(currObj.allPoints[3]);
-    //     removeColor(currObj.allPoints[4]);
-    //     removeColor(currObj.allPoints[5]);
-
-    //     let temp = currObj.allPoints[0];
-    //     let temp2 = currObj.allPoints[1];
-
-    //     // 4 => 1
-    //     currObj.allPoints[0] = currObj.allPoints[3];
-
-    //     // 3 => 2
-    //     currObj.allPoints[1] = currObj.allPoints[2];
-
-    //     // 1 => 3
-    //     currObj.allPoints[2] = temp;
-
-    //     currObj.allPoints[3] = temp2 + 1;
-
-    //     currObj.allPoints[4] += 31;
-
-    //     currObj.bottomPoints = [
-    //       currObj.allPoints[0],
-    //       currObj.allPoints[2],
-    //       currObj.allPoints[4],
-    //     ];
-  }
+  currObj.points = currObj.points[0].map((val, index) => currObj.points.map(row => row[index]).reverse())
 
   currObj.addColors();
+
 };
 
 printGrid = () => {
@@ -668,7 +604,8 @@ setInterval(() => {
   checkShapeFreeze(currObj);
 
   if (currObj.active) {
-    currObj.moveDown();
+    moveShapeDown(currObj);
+    
   } else {
     currObj = new T();
   }
