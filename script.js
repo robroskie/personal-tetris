@@ -3,14 +3,6 @@ for (let i = 0; i < 100; i++) {
   grid[i] = 0;
 }
 
-removeColor = (point) => {
-  grid[point] = 0;
-  let row = Math.floor(point / 10);
-  let col = (point % 10) + 1;
-  const temp_add = ".grid-item" + (row + 1) + "-" + col;
-  document.querySelector(temp_add).classList.remove("selected");
-};
-
 addColorHandler = () => {
   for (let i = 0; i < grid.length; i++) {
     if (grid[i] == 1) {
@@ -44,6 +36,14 @@ updateColors = (Obj) => {
   }
 };
 
+removeColor = (point) => {
+  grid[point] = 0;
+  let row = Math.floor(point / 10);
+  let col = (point % 10) + 1;
+  const temp_add = ".grid-item" + (row + 1) + "-" + col;
+  document.querySelector(temp_add).classList.remove("selected");
+};
+
 removeAllColors = (Obj) => {
   const arr = Obj.points;
 
@@ -60,73 +60,98 @@ removeAllColors = (Obj) => {
 
 checkCollisionPoints = (Obj) => {
   const collisionPoints = getBottomCollisionPoints(Obj);
-  collisionPoints.forEach(function (part, index, arr) {
-    const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
-    console.log(
-      `checking point ${Obj.location + arr[index][0] * 10 + arr[index][1]}`
-    );
-    if (grid[pointToCheck + 10] == 1 || pointToCheck >= 90) {
-      Obj.active = false;
-    }
-  });
-};
 
-checkGameOver = (Obj) => {
-  const collisionPoints = getBottomCollisionPoints(Obj);
   for (let i = 0; i < collisionPoints.length; i++) {
     const pointToCheck =
       Obj.location + collisionPoints[i][0] * 10 + collisionPoints[i][1];
-    if (grid[pointToCheck + 10] == 1 || pointToCheck >= 90) {
-      Obj.active = false;
+    {
+      if (grid[pointToCheck + 10] == 1 || pointToCheck >= 90) {
+        Obj.active = false;
+        return true;
+      }
+    }
+  }
+  return false;
+
+  // collisionPoints.forEach(function (part, index, arr) {
+  //   const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
+
+  //   if (grid[pointToCheck + 10] == 1 || pointToCheck >= 90) {
+  //     Obj.active = false;
+  //   }
+  // });
+};
+
+moveShapeDown = (Obj) => {
+  if (Obj.active) {
+    removeAllColors(Obj);
+    Obj.location += 10;
+    updateColors(Obj);
+  }
+};
+
+checkShapeLeft = (Obj) => {
+  let blocked = false;
+  const leftColPoints = getLeftCollisionPoints(Obj);
+
+  for (let i = 0; i < leftColPoints.length; i++) {
+    const pointToCheck =
+      Obj.location + leftColPoints[i][0] * 10 + leftColPoints[i][1];
+    if (grid[pointToCheck - 1] == 1 || pointToCheck % 10 == 0) {
+      blocked = true;
       return true;
     }
   }
   return false;
 };
 
-moveShapeDown = (Obj) => {
-  if (Obj.active) {
-    removeAllColors(Obj);
+checkShapeRight = (Obj) => {
+  let blocked = false;
+  const rightColPoints = getRightCollisionPoints(Obj);
 
-    Obj.location += 10;
-
-    updateColors(Obj);
+  for (let i = 0; i < rightColPoints.length; i++) {
+    const pointToCheck =
+      Obj.location + rightColPoints[i][0] * 10 + rightColPoints[i][1];
+    if (grid[pointToCheck + 1] == 1 || pointToCheck % 10 == 9) {
+      blocked = true;
+      return true;
+    }
   }
+  return false;
 };
 
 moveShapeLeft = (Obj) => {
   const leftColPoints = getLeftCollisionPoints(Obj);
-  let blocked = false;
+  let blocked = checkShapeLeft(Obj);
 
-  leftColPoints.forEach(function (part, index, arr) {
-    const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
-    if (grid[pointToCheck - 1] == 1 || pointToCheck % 10 == 0) {
-      blocked = true;
-    }
-  });
+  // leftColPoints.forEach(function (part, index, arr) {
+  //   const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
+  //   if (grid[pointToCheck - 1] == 1 || pointToCheck % 10 == 0) {
+  //     blocked = true;
+  //   }
+  // });
 
   if (!blocked) {
     Obj.location -= 1;
     removeAllColors(Obj);
-
     updateColors(Obj);
   }
 };
 
 moveShapeRight = (Obj) => {
   const rightColPoints = getRightCollisionPoints(Obj);
-  let blocked = false;
+  let blocked = checkShapeRight(Obj);
 
-  rightColPoints.forEach(function (part, index, arr) {
-    const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
-    if (grid[pointToCheck + 1] == 1 || pointToCheck % 10 == 9) {
-      blocked = true;
-    }
-  });
+  // rightColPoints.forEach(function (part, index, arr) {
+  //   const pointToCheck = Obj.location + arr[index][0] * 10 + arr[index][1];
+  //   if (grid[pointToCheck + 1] == 1 || pointToCheck % 10 == 9) {
+  //     blocked = true;
+  //   }
+  // });
+
   if (!blocked) {
     Obj.location += 1;
     removeAllColors(Obj);
-
     updateColors(Obj);
   }
 };
@@ -181,19 +206,6 @@ getBottomCollisionPoints = (Shape) => {
 
   return bottom_points;
 };
-
-// function testBlock() {
-//   this.location = 0;
-
-//   this.points = [
-//     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-//     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-//   ];
-
-//   this.orientation = 0;
-
-//   this.active = true;
-// }
 
 function Line() {
   this.location = 4;
@@ -295,18 +307,27 @@ function T() {
 }
 
 rotate = (currObj) => {
+  // Do a rotation but don't update the grid. If the rotation does not create a collision, update the grid
+  // If the rotation does create a collision, currObj.orientation--; and do nothing else
   if (!(currObj instanceof Square)) {
     console.log(`rotating `);
     currObj.orientation += 1;
     currObj.orientation %= 4;
 
-    currObj.points = currObj.points[0].map((val, index) =>
-      currObj.points.map((row) => row[index]).reverse()
-    );
-    updateColors(currObj);
+    let blocked = false;
+    blocked = checkShapeLeft(currObj);
+    blocked = checkShapeRight(currObj);
+
+    if (blocked) {
+      currObj.orientation -= 1;
+    } else {
+      currObj.points = currObj.points[0].map((val, index) =>
+        currObj.points.map((row) => row[index]).reverse()
+      );
+      updateColors(currObj);
+    }
   }
 };
-
 
 removeRow = (row) => {
   printGrid();
@@ -364,21 +385,48 @@ printGrid = () => {
   console.log("---------------");
 };
 
-nextShape = () =>{
+nextShape = (currObj) => {
+  const allShapes = [
+    new Line(),
+    new S(),
+    new Z(),
+    new Square(),
+    new L(),
+    new J(),
+    new T(),
+  ];
+
   const shapeVal = Math.floor(Math.random() * 6);
-  const allShapes = [new Line(), new S(), new Z(), new Square(), new L(), new J(), new T()];
+  if (typeof currObj !== 'undefined'){
+    while(allShapes[shapeVal] instanceof currObj){
+      shapeVal = Math.floor(Math.random() * 6);
+    }
+  }
   return allShapes[shapeVal];
-}
+};
 
 currObj = nextShape();
 updateColors(currObj);
 
-const interval = 200;
+const interval = 400;
 
 let gameOver = false;
 
 endgame = () => {
   clearInterval(runGame);
+};
+
+checkGameOver = (Obj) => {
+  const collisionPoints = getBottomCollisionPoints(Obj);
+  for (let i = 0; i < collisionPoints.length; i++) {
+    const pointToCheck =
+      Obj.location + collisionPoints[i][0] * 10 + collisionPoints[i][1];
+    if (grid[pointToCheck + 10] == 1 || pointToCheck >= 90) {
+      Obj.active = false;
+      return true;
+    }
+  }
+  return false;
 };
 
 let runGame = setInterval(() => {
