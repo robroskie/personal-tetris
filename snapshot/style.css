@@ -28,28 +28,3 @@
 #tilemaster{
   color: pink;
 }
-
-
-.container > .Line{
-  background-color: #00ffff;
-}
-
-.container > .S{
-  background-color: #ffff00;
-}
-
-.container > .Square{
-  background-color: #00ff00;
-}
-
-.container > .L{
-  background-color: #0000ff;
-}
-
-.container > .J{
-  background-color: #0000ff;
-}
-
-.container > .T{
-  background-color: #800080;
-}

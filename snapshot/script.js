@@ -1,21 +1,19 @@
-allShapes = []
-
 const grid = [];
 for (let i = 0; i < 100; i++) {
   grid[i] = 0;
 }
 
-addColorHandler = (Obj) => {
+addColorHandler = () => {
   for (let i = 0; i < grid.length; i++) {
     if (grid[i] == 1) {
-      addColor(Obj, i);
+      addColor(i);
     } else {
       removeColor(i);
     }
   }
 };
 
-addColor = (Obj, point) => {
+addColor = (point) => {
   grid[point] = 1;
 
   const row = Math.floor(point / 10);
@@ -23,7 +21,7 @@ addColor = (Obj, point) => {
 
   const temp_add = ".grid-item" + (row + 1) + "-" + col;
 
-  document.querySelector(temp_add).classList.add(Obj.colour);
+  document.querySelector(temp_add).classList.add("selected");
 };
 
 updateColors = (Obj) => {
@@ -32,22 +30,18 @@ updateColors = (Obj) => {
   for (let z = 0; z < arr.length; z++) {
     for (let i = 0; i < arr[z].length; i++) {
       if (arr[z][i] == 1) {
-        addColor(Obj, Obj.location + z * 10 + i);
+        addColor(Obj.location + z * 10 + i);
       }
     }
   }
 };
 
-removeColor = (Obj, point) => {
+removeColor = (point) => {
   grid[point] = 0;
   let row = Math.floor(point / 10);
   let col = (point % 10) + 1;
   const temp_add = ".grid-item" + (row + 1) + "-" + col;
-
-  let colour = Obj.colour;
-  console.log(Obj);
-  console.log(`removing  ${colour}`);
-  document.querySelector(temp_add).classList.remove(colour);
+  document.querySelector(temp_add).classList.remove("selected");
 };
 
 removeAllColors = (Obj) => {
@@ -57,8 +51,8 @@ removeAllColors = (Obj) => {
     for (let i = 0; i < arr[z].length; i++) {
       if (arr[z][i] == 1) {
         const toRemove = Obj.location + z * 10 + i;
-        
-        removeColor(Obj, toRemove);
+
+        removeColor(toRemove);
       }
     }
   }
@@ -89,14 +83,11 @@ checkCollisionPoints = (Obj) => {
 };
 
 moveShapeDown = (Obj) => {
-  removeAllColors(Obj);
-  Obj.location += 10;
-  updateColors(Obj);
-  // if (Obj.active) {
-    // removeAllColors(Obj);
-  //   Obj.location += 10;
-  //   updateColors(Obj);
-  // }
+  if (Obj.active) {
+    removeAllColors(Obj);
+    Obj.location += 10;
+    updateColors(Obj);
+  }
 };
 
 checkShapeLeft = (Obj) => {
@@ -168,7 +159,7 @@ moveShapeRight = (Obj) => {
 getLeftCollisionPoints = (Shape) => {
   const left_points = [];
 
-  // console.log(Shape.points.length);
+  console.log(Shape.points.length);
   for (let i = 0; i < Shape.points.length; i++) {
     let found = false;
     for (let z = 0; z < Shape.points[i].length && !found; z++) {
@@ -185,12 +176,12 @@ getLeftCollisionPoints = (Shape) => {
 getRightCollisionPoints = (Shape) => {
   const right_points = [];
 
-  // console.log(Shape.points.length);
+  console.log(Shape.points.length);
   for (let i = 0; i < Shape.points.length; i++) {
     let found = false;
     for (let z = Shape.points[i].length; z >= 0 && !found; z--) {
       if (Shape.points[i][z] == 1) {
-        // console.log("pushing i, z=" + i + z);
+        console.log("pushing i, z=" + i + z);
         right_points.push([i, z]);
         found = true;
       }
@@ -200,7 +191,6 @@ getRightCollisionPoints = (Shape) => {
   return right_points;
 };
 
-//This returns a list of all sets of points at the bottom surface of the shape as (x, y) pairs
 getBottomCollisionPoints = (Shape) => {
   const bottom_points = [];
 
@@ -209,7 +199,6 @@ getBottomCollisionPoints = (Shape) => {
     for (let z = Shape.points[i].length - 1; z >= 0 && !found; z--) {
       if (Shape.points[z][i] == 1) {
         bottom_points.push([z, i]);
-        console.log(`collision point${i} , ${z}`)
         found = true;
       }
     }
@@ -220,7 +209,6 @@ getBottomCollisionPoints = (Shape) => {
 
 function Line() {
   this.location = 4;
-  this.colour = 'Line';
 
   this.points = [
     [1, 1, 1, 1],
@@ -230,12 +218,12 @@ function Line() {
   ];
 
   this.orientation = 0;
+
   this.active = true;
 }
 
 function S() {
   this.location = 4;
-  this.colour = 'S';
 
   this.points = [
     [0, 1, 1],
@@ -244,12 +232,12 @@ function S() {
   ];
 
   this.orientation = 0;
+
   this.active = true;
 }
 
 function Z() {
   this.location = 4;
-  this.colour = 'S';
 
   this.points = [
     [1, 1, 0],
@@ -258,12 +246,12 @@ function Z() {
   ];
 
   this.orientation = 0;
+
   this.active = true;
 }
 
 function Square() {
   this.location = 4;
-  this.colour = "Square";
 
   this.points = [
     [1, 1, 0],
@@ -272,12 +260,12 @@ function Square() {
   ];
 
   this.orientation = 0;
+
   this.active = true;
 }
 
 function L() {
   this.location = 4;
-  this.colour = "L";
 
   this.points = [
     [1, 1, 1],
@@ -286,12 +274,12 @@ function L() {
   ];
 
   this.orientation = 0;
+
   this.active = true;
 }
 
 function J() {
   this.location = 4;
-  this.colour = "L";
 
   this.points = [
     [1, 0, 0],
@@ -300,12 +288,12 @@ function J() {
   ];
 
   this.orientation = 0;
+
   this.active = true;
 }
 
 function T() {
   this.location = 4;
-  this.colour = "T";
 
   this.points = [
     [1, 1, 1],
@@ -314,6 +302,7 @@ function T() {
   ];
 
   this.orientation = 0;
+
   this.active = true;
 }
 
@@ -352,9 +341,9 @@ removeRow = (row) => {
     }
   }
 
-  // printGrid();
+  printGrid();
 
-  // addColorHandler();
+  addColorHandler();
 };
 
 // Scan from left to right, bottom to top
@@ -397,29 +386,26 @@ printGrid = () => {
 };
 
 nextShape = (currObj) => {
-  // const allShapes = [
-  //   new Line(),
-  //   // new S(),
-  //   // new Z(),
-  //   // new Square(),
-  //   // new L(),
-  //   // new J(),
-  //   // new T(),
-  // ];
+  const allShapes = [
+    new Line(),
+    new S(),
+    new Z(),
+    new Square(),
+    new L(),
+    new J(),
+    new T(),
+  ];
 
-  // const shapeVal = Math.floor(Math.random() * 6);
-  // if (typeof currObj !== 'undefined'){
-  //   while(allShapes[shapeVal] instanceof currObj){
-  //     shapeVal = Math.floor(Math.random() * 6);
-  //   }
-  // }
-  // return allShapes[shapeVal];
-
-  return new T();
+  const shapeVal = Math.floor(Math.random() * 6);
+  if (typeof currObj !== 'undefined'){
+    while(allShapes[shapeVal] instanceof currObj){
+      shapeVal = Math.floor(Math.random() * 6);
+    }
+  }
+  return allShapes[shapeVal];
 };
 
 currObj = nextShape();
-allShapes.push(currObj);
 updateColors(currObj);
 
 const interval = 400;
@@ -443,45 +429,26 @@ checkGameOver = (Obj) => {
   return false;
 };
 
-
 let runGame = setInterval(() => {
-  // getBottomCollisionPoints(currObj);
-  // checkCollisionPoints(currObj);
-  
-  allShapes.forEach(element => {
-    // console.log(`element is ==> ${element}`);
-    if(element.active){
-      moveShapeDown(element);
+  getBottomCollisionPoints(currObj);
+  checkCollisionPoints(currObj);
+
+  if (currObj.active) {
+    moveShapeDown(currObj);
+  } else {
+    checkCompleteRows(currObj);
+    currObj = nextShape();
+    updateColors(currObj);
+    gameOver = checkGameOver(currObj);
+
+    if (gameOver) {
+      endgame();
+      alert("game over");
     }
-
-    console.log(`checking colilision points${checkCollisionPoints(element)}`);
-    console.log(`checking colilision points${getBottomCollisionPoints(element)}`);
-    if(checkCollisionPoints(element))
-      element.active = false;
-
-  });
-
-  
-
-
-  // if (currObj.active) {
-  //   // moveShapeDown(currObj);
-  // } else {
-  //   checkCompleteRows(currObj);
-  //   currObj = nextShape();
-  //   allShapes.push(currObj);
-  //   updateColors(currObj);
-  //   gameOver = checkGameOver(currObj);
-
-  //   if (gameOver) {
-  //     endgame();
-  //     console.log("game over");
-  //   }
-  // }
-  // printGrid();
+  }
+  printGrid();
   document.onkeydown = checkKey;
 
-  // Detect keypresses
   function checkKey(e) {
     removeAllColors(currObj);
     e = e || window.event;
