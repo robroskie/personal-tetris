@@ -437,15 +437,15 @@ printGrid = () => {
   console.log("---------------");
 };
 
-nextShape = (currObj) => {
-  let allShapeLocations = [];
+nextShape = () => {
+  const temp = new T();
+
+  allShapes.push(temp);
+  updateColors(temp);
 
   // Update list of current absolute shape locations
   generateAllShapeLocations();
   
-
-  const temp = new T();
-
   temp.bottomPoints.forEach(e => {
     const curBotPoint = temp.location + e[1] + e[0] * 10;
 
@@ -455,37 +455,22 @@ nextShape = (currObj) => {
     }
 })
 
-
-
-  const allShapes = [
-    new T(),
-    new Square(),
+  // const allShapes = [
+  //   new T(),
+  //   new Square(),
     
-    new Line(),
-    new S(),
-    new Z(),
+  //   new Line(),
+  //   new S(),
+  //   new Z(),
     
-    new L(),
-    new J(),
+  //   new L(),
+  //   new J(),
     
-  ];
-
-  // const shapeVal = Math.floor(Math.random() * 6);
-  // if (typeof currObj !== 'undefined'){
-  //   while(allShapes[shapeVal] instanceof currObj){
-  //     shapeVal = Math.floor(Math.random() * 6);
-  //   }
-  // }
-  // return allShapes[shapeVal];
-
-  return new T();
-
+  // ];
 };
 
 
-currObj = nextShape();
-allShapes.push(currObj);
-updateColors(currObj);
+
 
 const interval = 400;
 
@@ -508,33 +493,39 @@ checkGameOver = (Obj) => {
   return false;
 };
 
+makeColor = (element) => {
+  
 
+  
+  element.points.forEach(e => {
+    const curPoint = element.location + e[1] + e[0] * 10;
 
+    const pointLoc = ".grid-item" + (e[1] + 1) + "-" + e[0];
+    console.log();
+    if(document.querySelector(pointLoc).classList != null)
+      document.querySelector(pointLoc).classList.remove(element.colour);
+  });
+ 
+}
+
+nextShape();
 
 let runGame = setInterval(() => {
 
-
   generateAllShapeLocations();
   
-
-
+  // Check if bottom point(s) will go outside map
   allShapes.forEach(element => {
 
-
-
-
-    // Check if bottom point(s) will go outside map
     if(element.active){
       element.bottomPoints.forEach(e => {
-      
+
         const curBotPoint = element.location + e[1] + e[0] * 10;
 
         if(curBotPoint >= 90){
           element.active = false;
           
           currObj = nextShape();
-          allShapes.push(currObj);
-          updateColors(currObj);
         }
 
     })
@@ -553,56 +544,31 @@ let runGame = setInterval(() => {
         updateColors(currObj);
       }
   })
-
     // Move the shape down if it is active
     if(element.active){
       moveShapeDown(element);
     }
 
-
-
-
-
-    
-
-
-
+    // Recolor shape
+    console.log('making color call');
+    makeColor(element);
 
   });
-
-  
-
-
-  // if (currObj.active) {
-  //   // moveShapeDown(currObj);
-  // } else {
-  //   checkCompleteRows(currObj);
-  //   currObj = nextShape();
-  //   allShapes.push(currObj);
-  //   updateColors(currObj);
-  //   gameOver = checkGameOver(currObj);
-
-  //   if (gameOver) {
-  //     endgame();
-  //     console.log("game over");
-  //   }
-  // }
-  // printGrid();
-  document.onkeydown = checkKey;
-
-  // Detect keypresses
-  function checkKey(e) {
-    removeAllColors(currObj);
-    e = e || window.event;
-    if (e.keyCode == "38") 
-      rotate(currObj);
-    else if (e.keyCode == "37") {
-      console.log('go left!')
-      moveShapeLeft(currObj);
-    }
-
-    else if (e.keyCode == "39") 
-      moveShapeRight(currObj);
-  }
-
 }, interval);
+
+
+  // document.onkeydown = checkKey;
+
+  // // Detect keypresses
+  // function checkKey(e) {
+  //   removeAllColors(currObj);
+  //   e = e || window.event;
+  //   if (e.keyCode == "38") 
+  //     rotate(currObj);
+  //   else if (e.keyCode == "37") {
+  //     console.log('go left!')
+  //     moveShapeLeft(currObj);
+  //   }
+  //   else if (e.keyCode == "39") 
+  //     moveShapeRight(currObj);
+  // }
